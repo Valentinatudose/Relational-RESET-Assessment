@@ -1,0 +1,1553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Hidden Pattern Blueprint | RESET Assessment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1E4976;
+            --primary-light: #2E6BA8;
+            --secondary: #D4A574;
+            --accent: #E8927C;
+            --success: #7BA888;
+            --background: #FAF8F5;
+            --surface: #FFFFFF;
+            --text-primary: #2C3E50;
+            --text-secondary: #6B7280;
+            --border: #E5DDD5;
+            --shadow: rgba(30, 73, 118, 0.08);
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: linear-gradient(135deg, var(--background) 0%, #F5F1EC 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            right: -20%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(212, 165, 116, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -30%;
+            left: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(74, 143, 179, 0.06) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .tagline {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+
+        .welcome-card {
+            background: var(--surface);
+            border-radius: 24px;
+            padding: 50px 40px;
+            box-shadow: 0 20px 60px var(--shadow);
+            margin-bottom: 30px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .welcome-card h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .welcome-card p {
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+            font-size: 1.05rem;
+        }
+
+        .info-list {
+            list-style: none;
+            margin: 30px 0;
+        }
+
+        .info-list li {
+            padding: 12px 0;
+            padding-left: 35px;
+            position: relative;
+            color: var(--text-primary);
+        }
+
+        .info-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--success);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'DM Sans', sans-serif;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            padding: 16px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'DM Sans', sans-serif;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px var(--shadow);
+        }
+
+        .btn-secondary {
+            background: var(--surface);
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background: var(--border);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 30px;
+        }
+
+        .question-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 20px var(--shadow);
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 14px 18px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .option-label:hover {
+            border-color: var(--primary);
+            background: rgba(45, 95, 126, 0.02);
+        }
+
+        .option-label input[type="radio"],
+        .option-label input[type="checkbox"] {
+            margin-right: 12px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .option-label input[type="radio"]:checked ~ .option-text,
+        .option-label input[type="checkbox"]:checked ~ .option-text {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .option-text {
+            flex: 1;
+            color: var(--text-primary);
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'DM Sans', sans-serif;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .navigation {
+            display: flex;
+            gap: 15px;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .completion-screen {
+            text-align: center;
+            padding: 50px 30px;
+        }
+
+        .completion-icon {
+            font-size: 4rem;
+            color: var(--success);
+            margin-bottom: 20px;
+        }
+
+        .profile-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 30px;
+            margin: 20px 0;
+            text-align: left;
+            box-shadow: 0 4px 20px var(--shadow);
+        }
+
+        .profile-card h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .profile-card p {
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            line-height: 1.8;
+        }
+
+        .cta-box {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .cta-box h3 {
+            margin-bottom: 15px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .cta-box p {
+            margin-bottom: 20px;
+            opacity: 0.95;
+        }
+
+        .btn-white {
+            background: white;
+            color: var(--primary);
+            padding: 14px 28px;
+            border-radius: 10px;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-white:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2rem;
+            }
+            .welcome-card {
+                padding: 30px 25px;
+            }
+            .welcome-card h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">Your Hidden Pattern Blueprint</div>
+            <div class="tagline">A RESET Assessment for navigating change with clarity and alignment</div>
+        </header>
+
+        <!-- Welcome Screen -->
+        <div class="welcome-card" id="welcomeScreen">
+            <h1>Welcome to Your Hidden Pattern Blueprint</h1>
+            <p>Life's thresholds - motherhood, career shifts, loss, relocation, identity evolution - are transformative forces that often leave us navigating on autopilot.</p>
+            <p>This assessment will help you spot hidden patterns, understand what's blocking your evolution, and reveal your fastest pathway to realignment.</p>
+            
+            <ul class="info-list">
+                <li>Takes approximately 10-15 minutes to complete</li>
+                <li>13 questions across key life dimensions</li>
+                <li>Receive your personalized profile immediately</li>
+                <li>Completely confidential</li>
+            </ul>
+
+            <div class="start-form">
+                <div class="form-group">
+                    <label for="userName">Your Name</label>
+                    <input type="text" id="userName" placeholder="Enter your full name" required>
+                </div>
+                <div class="form-group">
+                    <label for="userEmail">Your Email</label>
+                    <input type="email" id="userEmail" placeholder="your.email@example.com" required>
+                </div>
+                
+                <button class="btn btn-primary" onclick="startAssessment()" style="width: 100%; margin-top: 10px;">
+                    Begin Your RESET Assessment
+                    <span>→</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Assessment Form -->
+        <div class="form-section" id="assessmentForm">
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-text" id="progressText">Question 1 of 13</div>
+            
+            <div id="questionsContainer"></div>
+
+            <div class="navigation">
+                <button class="btn btn-secondary" onclick="previousQuestion()" id="prevBtn">
+                    <span>←</span>
+                    Previous
+                </button>
+                <button class="btn btn-primary" onclick="nextQuestion()" id="nextBtn">
+                    Next
+                    <span>→</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // VERSION 2.0 - Cache buster
+        localStorage.clear(); // Clear any cached data
+
+        // Assessment Data
+        const assessmentData = {
+            questions: [
+                {
+                    id: 1,
+                    text: "Which life threshold are you currently navigating? (Check all that apply)",
+                    type: "checkbox",
+                    options: [
+                        "Motherhood / parenthood transition",
+                        "Career shift or professional identity change",
+                        "Relationship transition (partnership, divorce, dating)",
+                        "Loss or grief (person, role, dream)",
+                        "Relocation or major life restructuring",
+                        "Health challenge or body transformation",
+                        "Empty nest / life stage evolution",
+                        "Other"
+                    ]
+                },
+                {
+                    id: 2,
+                    text: "During life transitions, certain patterns tend to show up. Which of these feels most true for you right now? (Choose the one that resonates most)",
+                    type: "radio",
+                    options: [
+                        "I work extra hard, trying to prove I deserve this new chapter",
+                        "I find myself reaching for old patterns, even when they don't fit anymore",
+                        "I feel lost - like I don't know who I am anymore",
+                        "I'm resisting the change, trying to make the old version of me work",
+                        "I feel numb or disconnected from what I actually want",
+                        "I'm feeling excited about new possibilities and fresh beginnings"
+                    ]
+                },
+                {
+                    id: 3,
+                    text: "When you're facing a big life change, what's your first response? (Think about recent times this happened)",
+                    type: "radio",
+                    options: [
+                        "I need to figure this out and get it right",
+                        "I question whether I'm equipped to handle this",
+                        "I push forward without much processing - action over feelings",
+                        "I feel excited - this is an opportunity for something new",
+                        "I hold back and wait until I feel more ready"
+                    ]
+                },
+                {
+                    id: 4,
+                    text: "Which of these feels most true about how you experience change?",
+                    type: "radio",
+                    options: [
+                        "Change should feel natural and easy, or something is wrong",
+                        "Change requires struggle and sacrifice",
+                        "Change is an opportunity to grow and evolve",
+                        "Change is unpredictable - I never know what will happen"
+                    ]
+                },
+                {
+                    id: 5,
+                    text: "During transitions, we all feel different things. Which has been most present for you lately?",
+                    type: "radio",
+                    options: [
+                        "Anxiety or worry about what might change",
+                        "Frustration or resentment about having to adapt",
+                        "Numbness / disconnection from my body and desires",
+                        "Excitement / curiosity about who I'm becoming"
+                    ]
+                },
+                {
+                    id: 6,
+                    text: "What's making this transition hard for you right now?",
+                    type: "textarea",
+                    placeholder: "Share your thoughts..."
+                },
+                {
+                    id: 7,
+                    text: "Do you feel past experiences or old identities still influence how you show up now?",
+                    type: "radio",
+                    options: [
+                        "Yes - I think about them often and they affect my choices",
+                        "Yes - but I try to avoid or suppress them",
+                        "No - I feel like I've fully moved on",
+                        "I'm not sure - I haven't examined this",
+                        "Yes - and I've learned from them, so I'm approaching this more prepared"
+                    ]
+                },
+                {
+                    id: 8,
+                    text: "When you encounter stress or uncertainty (especially in recent months), how does your body typically respond?",
+                    type: "radio",
+                    options: [
+                        "Tenses up - chest tightens, breathing gets shallow, muscles contract",
+                        "Gets restless - I feel agitated, like I need to move or get away",
+                        "Goes quiet - I feel numb, heavy, tired, or distant",
+                        "Stays grounded - I can feel what's happening without getting overwhelmed"
+                    ]
+                },
+                {
+                    id: 9,
+                    text: "Which practices (if any) help you feel grounded and connected to yourself?",
+                    type: "textarea",
+                    placeholder: "Describe what helps you..."
+                },
+                {
+                    id: 10,
+                    text: "During transitions, how clear are you about what you need, and how able are you to express those needs?",
+                    type: "radio",
+                    options: [
+                        "Very clear and able to express them - I know what I need and can communicate it",
+                        "Pretty clear but hesitant - I know what I need but struggle to ask for it",
+                        "Unclear about my needs - I'm not sure what I need right now",
+                        "Clear but unable to express - I know what I need but can't seem to speak up"
+                    ]
+                },
+                {
+                    id: 11,
+                    text: "How often do you notice early signs that something feels off?",
+                    type: "radio",
+                    options: [
+                        "Always - I trust what my body is telling me",
+                        "Sometimes - I realize later when things have escalated",
+                        "Rarely - I tend to override or ignore the signals",
+                        "Never - I'm not sure what to look for"
+                    ]
+                },
+                {
+                    id: 12,
+                    text: "Think about the pattern or response that creates the most difficulty for you during transitions.\n\nIf you could change one thing about how you handle change, what would it be?\n\n(For example: 'I wish I didn't need everything figured out before starting' or 'I wish I could feel my emotions without shutting down')",
+                    type: "textarea",
+                    placeholder: "Describe what you'd like to change..."
+                },
+                {
+                    id: 13,
+                    text: "Imagine you've successfully navigated this transition and feel aligned with who you're becoming.\n\nWhat would be different in your everyday life?\n\nThink about:\n• How would you feel in your body?\n• What would you be doing differently?\n• How would you relate to yourself and others?",
+                    type: "textarea",
+                    placeholder: "Describe what would be different..."
+                }
+            ]
+        };
+
+        // Application State
+        let currentQuestion = 0;
+        let responses = {};
+        let userData = {};
+
+        function startAssessment() {
+            const userName = document.getElementById('userName').value.trim();
+            const userEmail = document.getElementById('userEmail').value.trim();
+
+            if (!userName || !userEmail) {
+                alert('Please fill in all fields before starting.');
+                return;
+            }
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(userEmail)) {
+                alert('Please enter a valid email address.');
+                return;
+            }
+
+            userData = { userName, userEmail };
+            
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('assessmentForm').classList.add('active');
+            
+            renderQuestion(currentQuestion);
+        }
+
+        function renderQuestion(questionIndex) {
+            const question = assessmentData.questions[questionIndex];
+            const container = document.getElementById('questionsContainer');
+            
+            // Update progress
+            const progress = ((questionIndex + 1) / assessmentData.questions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressText').textContent = 
+                `Question ${questionIndex + 1} of ${assessmentData.questions.length}`;
+            
+            // Clear and render question
+            container.innerHTML = '';
+            
+            const questionCard = document.createElement('div');
+            questionCard.className = 'question-card';
+            
+            if (question.type === 'checkbox') {
+                let optionsHTML = '';
+                question.options.forEach((option, i) => {
+                    const checked = responses[question.id] && responses[question.id].includes(option) ? 'checked' : '';
+                    optionsHTML += `
+                        <label class="option-label">
+                            <input type="checkbox" 
+                                   value="${option}"
+                                   ${checked}
+                                   onchange="saveCheckboxResponse(${question.id}, this)">
+                            <span class="option-text">${option}</span>
+                        </label>
+                    `;
+                });
+                
+                questionCard.innerHTML = `
+                    <div class="question-text">${question.text}</div>
+                    <div class="options">${optionsHTML}</div>
+                `;
+            } else if (question.type === 'radio') {
+                let optionsHTML = '';
+                question.options.forEach((option, i) => {
+                    const checked = responses[question.id] === option ? 'checked' : '';
+                    optionsHTML += `
+                        <label class="option-label">
+                            <input type="radio" 
+                                   name="q${question.id}"
+                                   value="${option}"
+                                   ${checked}
+                                   onchange="saveRadioResponse(${question.id}, this.value)">
+                            <span class="option-text">${option}</span>
+                        </label>
+                    `;
+                });
+                
+                questionCard.innerHTML = `
+                    <div class="question-text">${question.text}</div>
+                    <div class="options">${optionsHTML}</div>
+                `;
+            } else if (question.type === 'textarea') {
+                const value = responses[question.id] || '';
+                questionCard.innerHTML = `
+                    <div class="question-text">${question.text}</div>
+                    <textarea 
+                        placeholder="${question.placeholder}"
+                        onchange="saveTextResponse(${question.id}, this.value)"
+                    >${value}</textarea>
+                `;
+            }
+            
+            container.appendChild(questionCard);
+            
+            // Update button states
+            document.getElementById('prevBtn').disabled = questionIndex === 0;
+            document.getElementById('nextBtn').textContent = 
+                questionIndex === assessmentData.questions.length - 1 ? 'Complete Assessment →' : 'Next →';
+        }
+
+        function saveCheckboxResponse(questionId, checkbox) {
+            if (!responses[questionId]) {
+                responses[questionId] = [];
+            }
+            
+            if (checkbox.checked) {
+                if (!responses[questionId].includes(checkbox.value)) {
+                    responses[questionId].push(checkbox.value);
+                }
+            } else {
+                responses[questionId] = responses[questionId].filter(v => v !== checkbox.value);
+            }
+        }
+
+        function saveRadioResponse(questionId, value) {
+            responses[questionId] = value;
+        }
+
+        function saveTextResponse(questionId, value) {
+            responses[questionId] = value;
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                renderQuestion(currentQuestion);
+            }
+        }
+
+        function nextQuestion() {
+            // Check if current question is answered
+            const question = assessmentData.questions[currentQuestion];
+            
+            if (!responses[question.id] || 
+                (Array.isArray(responses[question.id]) && responses[question.id].length === 0) ||
+                (typeof responses[question.id] === 'string' && responses[question.id].trim() === '')) {
+                alert('Please answer this question before continuing.');
+                return;
+            }
+            
+            if (currentQuestion < assessmentData.questions.length - 1) {
+                currentQuestion++;
+                renderQuestion(currentQuestion);
+            } else {
+                completeAssessment();
+            }
+        }
+
+        function completeAssessment() {
+            const profile = generateProfile();
+            const finalData = {
+                userData,
+                responses,
+                profile,
+                completedAt: new Date().toISOString()
+            };
+            
+            // Submit to Google Sheets
+            submitToGoogleSheets(finalData);
+            
+            // Show completion screen
+            displayResults(profile);
+        }
+
+        function generateProfile() {
+            // Profile generation logic based on responses
+            const profile = {
+                primaryThreshold: '',
+                dominantPattern: '',
+                copingStyle: '',
+                emotionalSignature: '',
+                somaticPattern: '',
+                readinessLevel: '',
+                recommendations: []
+            };
+
+            // Analyze Q1 - Primary Threshold
+            if (responses[1] && Array.isArray(responses[1])) {
+                profile.primaryThreshold = responses[1][0] || 'Identity transition';
+            }
+
+            // Analyze Q2 - Dominant Pattern
+            const q2Map = {
+                "I work extra hard, trying to prove I deserve this new chapter": "Trying to Prove Your Worth",
+                "I find myself reaching for old patterns, even when they don't fit anymore": "Holding Onto the Old",
+                "I feel lost - like I don't know who I am anymore": "Feeling Lost in Transition",
+                "I'm resisting the change, trying to make the old version of me work": "Resisting the Change",
+                "I feel numb or disconnected from what I actually want": "Feeling Disconnected",
+                "I'm feeling excited about new possibilities and fresh beginnings": "Embracing New Possibilities"
+            };
+            profile.dominantPattern = q2Map[responses[2]] || "In Transition";
+
+            // Analyze Q3 - Coping Style
+            const q3Map = {
+                "I need to figure this out and get it right": "Need to Get It Right",
+                "I question whether I'm equipped to handle this": "Hard on Yourself",
+                "I push forward without much processing - action over feelings": "Push Through Without Processing",
+                "I feel excited - this is an opportunity for something new": "See It as Growth",
+                "I hold back and wait until I feel more ready": "Taking Your Time"
+            };
+            profile.copingStyle = q3Map[responses[3]] || "Processing";
+
+            // Analyze Q5 - Emotional Signature
+            const q5Map = {
+                "Anxiety or worry about what might change": "Anxious-Protective",
+                "Frustration or resentment about having to adapt": "Resentful-Guardian",
+                "Numbness / disconnection from my body and desires": "Numb-Disconnected",
+                "Excitement / curiosity about who I'm becoming": "Curious-Expansive"
+            };
+            profile.emotionalSignature = q5Map[responses[5]] || "In Process";
+
+            // Analyze Q8 - Somatic Pattern
+            const q8Map = {
+                "Tenses up - chest tightens, breathing gets shallow, muscles contract": "Tense & Activated",
+                "Gets restless - I feel agitated, like I need to move or get away": "Restless & Alert",
+                "Goes quiet - I feel numb, heavy, tired, or distant": "Quiet & Withdrawn",
+                "Stays grounded - I can feel what's happening without getting overwhelmed": "Grounded & Present"
+            };
+            profile.somaticPattern = q8Map[responses[8]] || "Mixed Patterns";
+
+            // Analyze Readiness - Q10 + Q11
+            let readinessScore = 0;
+            if (responses[10]?.includes('Very confident')) readinessScore += 2;
+            if (responses[10]?.includes('Somewhat confident')) readinessScore += 1;
+            if (responses[11]?.includes('Always')) readinessScore += 2;
+            if (responses[11]?.includes('Sometimes')) readinessScore += 1;
+
+            if (readinessScore >= 3) profile.readinessLevel = "Ready for Deep Work";
+            else if (readinessScore >= 1) profile.readinessLevel = "Building Your Foundation";
+            else profile.readinessLevel = "Starting to Notice";
+
+            // Generate Recommendations
+            profile.recommendations = generateRecommendations(profile, responses);
+
+            return profile;
+        }
+
+        function generateRecommendations(profile, responses) {
+            const recommendations = [];
+
+            // RESET step recommendations
+            if (responses[7]?.includes('Yes')) {
+                recommendations.push({
+                    step: "ERASE",
+                    priority: "High",
+                    description: "Your past experiences are actively influencing your present. ERASE work will help you release core wounds and outdated identities."
+                });
+            }
+
+            if (profile.somaticPattern.includes('Fight') || profile.somaticPattern.includes('Flight') || profile.somaticPattern.includes('Freeze')) {
+                recommendations.push({
+                    step: "SET",
+                    priority: "High",
+                    description: "Your nervous system needs new somatic anchors. SET practices will help you update your body's automatic responses to stress."
+                });
+            }
+
+            if (responses[10]?.includes('Not confident') || responses[10]?.includes("I'm not sure")) {
+                recommendations.push({
+                    step: "EMPOWER",
+                    priority: "High",
+                    description: "Building your voice and boundaries is essential. EMPOWER work will help you clearly communicate your needs and hold your ground."
+                });
+            }
+
+            if (recommendations.length === 0) {
+                recommendations.push({
+                    step: "RECOGNISE",
+                    priority: "Medium",
+                    description: "Begin by deepening your awareness of the hidden beliefs running your current patterns."
+                });
+            }
+
+            return recommendations;
+        }
+
+        function submitToGoogleSheets(finalData) {
+            const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzsapU-uLakNqNCrryxEALmUPyNHqCr2rFreuhWIdxu-ij1V8VsY7yDxBiSBxFhhADn/exec"; // You'll replace this
+            
+            const submissionData = {
+                timestamp: finalData.completedAt,
+                userName: finalData.userData.userName,
+                userEmail: finalData.userData.userEmail,
+                primaryThreshold: finalData.profile.primaryThreshold,
+                dominantPattern: finalData.profile.dominantPattern,
+                copingStyle: finalData.profile.copingStyle,
+                emotionalSignature: finalData.profile.emotionalSignature,
+                somaticPattern: finalData.profile.somaticPattern,
+                readinessLevel: finalData.profile.readinessLevel,
+                responses: JSON.stringify(finalData.responses),
+                profile: JSON.stringify(finalData.profile)
+            };
+            
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(submissionData)
+            })
+            .then(() => {
+                console.log('Submission sent successfully');
+            })
+            .catch(error => {
+                console.error('Submission error:', error);
+            });
+        }
+
+
+        function getTransitionInsights(threshold) {
+            const insights = {
+                "Motherhood / parenthood transition": {
+                    challenges: "This transition triggers a fundamental identity crisis that most people don't expect. Beyond the practical challenges of caring for a child, you're facing: the death of your pre-parent self, guilt about wanting time for yourself, perfectionist tendencies amplified by fear of 'getting it wrong,' and the loss of spontaneity and autonomy. Many people also struggle with their body feeling foreign, relationships shifting in uncomfortable ways, and a deep, unspoken grief for the life they had before - even when they wanted this change.",
+                    invitation: "This threshold is actually inviting you to: release the fantasy of the 'perfect parent' and embrace being a real, imperfect human; learn to ask for help without shame; trust your body's wisdom again after it's been medicalized and scrutinized; and rebuild your identity to include motherhood without being consumed by it. The patterns that surface now - perfectionism, self-sacrifice, loss of self - are actually showing you what's been running in the background all along. This moment is your opportunity to rewire them before they calcify into your parenting approach."
+                },
+                "Career shift or professional identity change": {
+                    challenges: "This transition exposes how much of your identity and self-worth has been tied to your professional role. Common struggles include: imposter syndrome in the new space, grief for the expertise and respect you're leaving behind, fear that you're 'starting over too late,' comparison to people who seem ahead of you, and anxiety about whether you made the 'right' choice. Many people also face financial stress, strained relationships (partners/family questioning the change), and a deep uncertainty about whether they're capable of succeeding in something new.",
+                    invitation: "This threshold is inviting you to: separate your worth from your job title, trust that your value isn't measured by expertise or achievement, release the need to have everything figured out before you start, and build confidence from the inside rather than external validation. The patterns that emerge here - perfectionism, comparison, fear of failure - are the same ones that have been shaping your career all along. This is your chance to build a professional identity based on who you actually are, not who you think you should be."
+                },
+                "Relationship transition (partnership, divorce, dating)": {
+                    challenges: "Relationship transitions force you to confront your deepest beliefs about love, worth, and belonging. Whether entering, leaving, or redefining partnership, common struggles include: repeating the same relationship patterns with different people, losing yourself when you get close to someone, attracting partners who confirm your worst beliefs about yourself, difficulty trusting after betrayal, fear that you're 'unlovable' or 'too much,' and confusion about whether you even know what healthy love looks like. Many people also carry guilt (for leaving, for staying, for wanting more) and shame about their relationship history.",
+                    invitation: "This threshold is inviting you to: heal the core wound that's been driving your relationship patterns, learn to stay connected to yourself while close to others, release the belief that love requires sacrifice or suffering, and recognize that you're worthy of healthy partnership without having to earn it. The patterns showing up now - anxious attachment, people-pleasing, emotional unavailability - aren't personality flaws. They're adaptive strategies you learned when love felt conditional or unsafe. This is your opportunity to rewire them before you carry them into your next relationship."
+                },
+                "Loss or grief (person, role, dream)": {
+                    challenges: "Grief is a complete reorganization of reality, and the challenges run deeper than sadness. Common struggles include: feeling guilty for moments of happiness or moving forward, losing touch with who you were before the loss, isolation (people don't know what to say, so they avoid you), identity confusion (especially if the loss was central to how you defined yourself), anger at yourself or others, fear that healing means forgetting or betraying, and pressure to 'be over it' on someone else's timeline. Many people also struggle with secondary losses - friendships that fade, routines that no longer make sense, dreams that died with the person or role.",
+                    invitation: "This threshold is inviting you to: integrate the loss into your identity without being defined by it, give yourself permission to grieve while also living, rebuild meaning and purpose in a world that looks different now, and trust that healing doesn't mean moving on or forgetting - it means carrying the loss without it carrying you. The patterns that surface - guilt, identity crisis, isolation - are showing you where you've been avoiding grief or tying your worth to external roles. This is your opportunity to build an identity that can hold both loss and life, both grief and growth."
+                },
+                "Relocation or major life restructuring": {
+                    challenges: "Moving or restructuring your life reveals how much your environment has been shaping your identity. Common struggles include: excitement mixed with guilt for leaving, difficulty recreating your sense of self in a new context, loneliness and isolation in unfamiliar surroundings, the realization that geography can't solve internal patterns (they followed you), loss of the external scaffolding that held your routines and relationships, and identity confusion when you're no longer defined by the roles you played in the old place. Many people also struggle with grief for the life left behind, even when the move was chosen and wanted.",
+                    invitation: "This threshold is inviting you to: build an identity that isn't dependent on external circumstances, trust that you can create belonging anywhere, release who you had to be in the old place, and recognize which patterns are truly yours (vs. adaptations to your old environment). The struggles showing up now - loneliness, difficulty connecting, patterns that followed you - are revealing what's been there all along, just masked by familiarity. This is your opportunity to consciously choose who you become in this new context, rather than defaulting to old programming."
+                },
+                "Health challenge or body transformation": {
+                    challenges: "When your body changes or fails you, it challenges your most basic sense of control and safety. Common struggles include: betrayal and anger at your body, grief for your former physical self, fear that you'll never feel 'normal' again, loss of activities or abilities that were core to your identity, shame about needing help or accommodations, difficulty trusting your body's signals, and isolation (people don't understand, you can't do what you used to). Many people also face: chronic pain or fatigue, medical trauma from invasive procedures, and the emotional toll of managing a condition while trying to live a full life.",
+                    invitation: "This threshold is inviting you to: rebuild trust with your body, release the belief that your body is the enemy or that you're being punished, learn to inhabit your body as it is now rather than mourning what was, and recognize that your worth isn't tied to your physical capabilities. The patterns emerging - self-blame, shame, disconnection from your body - are often rooted in early experiences where your body wasn't safe or your needs weren't met. This is your opportunity to create a new relationship with your body based on compassion and partnership, not control and judgment."
+                },
+                "Empty nest / life stage evolution": {
+                    challenges: "When a major life chapter closes, you're forced to ask: who am I when I'm not needed in the old way? Common struggles include: feeling lost without the structure and purpose of the previous stage, fear of irrelevance or being 'past your prime,' not knowing what you actually want (because you've been focused on others' needs for so long), difficulty filling the time or finding new meaning, strained relationships as roles shift, and grief for the version of yourself that's no longer needed. Many people also face: identity crisis, loneliness as the house empties or retirement begins, and anxiety about aging or mortality.",
+                    invitation: "This threshold is inviting you to: reclaim your own desires and agency, release the belief that your value is tied to being needed or productive, rebuild your sense of purpose around who you are (not what you do for others), and trust that this new chapter can be generative rather than just decline. The patterns surfacing - loss of identity, fear of irrelevance, difficulty receiving - are showing you how much of your worth has been externalized. This is your opportunity to build an identity based on being, not doing, and to direct your energy inward after years of giving it away."
+                },
+                "Other": {
+                    challenges: "Navigating multiple transitions simultaneously - or a change that doesn't fit neat categories - brings unique challenges: feeling like you're always in flux (never stable), exhaustion from constant adaptation, difficulty knowing which change to focus on first, lack of roadmap or clear 'before and after,' isolation (your experience doesn't match others' tidy narratives), and doubt about whether you're capable of handling so much at once. Many people also struggle with: decision fatigue, feeling like you're failing at everything because nothing has your full attention, and wondering if you're creating chaos or if chaos is happening to you.",
+                    invitation: "This threshold is inviting you to: build your capacity to hold uncertainty and complexity, trust your resilience even when you can't see the endpoint, release the belief that you need everything figured out or stable before you can move forward, and recognize that navigating multiple transitions simultaneously is a skill you're developing, not evidence of failure. The patterns showing up - overwhelm, need for control, difficulty trusting the process - are revealing your relationship with uncertainty itself. This is your opportunity to rewire how you respond to change at a foundational level, so future transitions feel less destabilizing."
+                }
+            };
+            
+            // Handle array of thresholds (from Q1 checkboxes)
+            let primaryThreshold = threshold;
+            if (Array.isArray(threshold) && threshold.length > 0) {
+                primaryThreshold = threshold[0];
+            }
+            
+            return insights[primaryThreshold] || insights["Other"];
+        }
+
+
+
+        function getPatternInsights(pattern) {
+            const insights = {
+                "Trying to Prove Your Worth": {
+                    belief: "I'm only valuable if I earn it. Love/belonging/success must be deserved.",
+                    opportunity: "This transition is forcing the pattern to the surface because you can't 'prove yourself' your way out of it anymore. The harder you work to earn worthiness in this new chapter, the more exhausted and resentful you become. This is your invitation to recognize that worth isn't earned - it's inherent. RESET helps you identify the original moment when you learned that love was conditional (RECOGNITION), release the body's stress response that fires when you're not 'doing enough' (SOMATIC RELEASE), and install a new baseline belief: you're worthy simply because you exist. When this pattern is rewired, you stop over-functioning and start receiving."
+                },
+                "Holding Onto the Old": {
+                    belief: "Change is dangerous. What I know is safer than the unknown, even when what I know is painful.",
+                    opportunity: "This transition is showing you that clinging to the familiar isn't protecting you - it's keeping you stuck. The old patterns don't work in this new context, but letting go feels terrifying. This is your invitation to rewire your relationship with change at the nervous system level. RESET helps you find the original experience that taught you 'unknown = danger' (RECOGNITION), discharge the fear response that fires when you face uncertainty (SOMATIC RELEASE), and build your capacity to tolerate not-knowing without collapse (EMPOWERMENT). When this is rewired, change stops feeling like a threat and starts feeling like possibility."
+                },
+                "Feeling Lost in Transition": {
+                    belief: "If I don't know who I am, I'm not safe. Uncertainty is dangerous.",
+                    opportunity: "This in-between space - where the old you is gone but the new you hasn't emerged - is activating your deepest fear of not-knowing. But this liminal space isn't a problem to solve; it's a necessary stage of transformation. This is your invitation to learn that you can be safe even when you're uncertain. RESET helps you identify when you learned that confusion equals danger (RECOGNITION), teach your body to tolerate not-knowing without panic (SOMATIC RELEASE), and stay present in the transition without rushing to premature closure (EMPOWERMENT). When this is rewired, the in-between becomes creative space rather than a void to escape."
+                },
+                "Resisting the Change": {
+                    belief: "If I change, I'll lose myself. Growth means death of who I am.",
+                    opportunity: "You're fighting this transition because it feels like a threat to your core identity. But resisting is using more energy than adapting would, and it's keeping you stuck in pain. This is your invitation to see that evolution doesn't mean erasure - you're becoming MORE yourself, not less. RESET helps you find the moment when change meant loss of self (RECOGNITION), release the somatic contraction that happens when you're asked to adapt (SOMATIC RELEASE), and recognize that your essence isn't threatened by growth (TRANSFORMATION). When this is rewired, you can evolve without feeling like you're disappearing."
+                },
+                "Feeling Disconnected": {
+                    belief: "It's safer not to feel. If I let myself feel, I'll be overwhelmed.",
+                    opportunity: "You've numbed out to protect yourself from overwhelm, but now the disconnection is keeping you stuck. You can't navigate this transition if you're cut off from your internal compass - you don't know what you want, need, or feel. This is your invitation to rebuild your capacity to feel without flooding. RESET helps you identify what originally overwhelmed your system so badly that shutdown became necessary (RECOGNITION), slowly restore your ability to feel without being consumed (SOMATIC RELEASE), and teach your nervous system that it's safe to come back online (EMPOWERMENT). When this is rewired, you can feel fully without fear of collapse."
+                },
+                "Embracing New Possibilities": {
+                    belief: "Change is an opportunity. I can handle uncertainty with curiosity. (This is a strength, not a limitation!)",
+                    opportunity: "Your optimism and openness are genuine strengths - you naturally orient toward growth. But even positive patterns can have shadows. This is your invitation to ensure your excitement is grounded in your body, not just your mind; that you're moving toward something authentic, not away from discomfort; and that your 'growth mindset' isn't bypassing real feelings that need attention. RESET helps you make sure your forward momentum is sustainable, that hidden blocks aren't quietly undermining you, and that your transformation is deep and lasting, not just surface-level enthusiasm."
+                }
+            };
+            
+            return insights[pattern] || {
+                belief: "You're navigating a significant transition.",
+                opportunity: "This is an opportunity for deep personal growth and transformation."
+            };
+        }
+
+
+
+        function getResetRecommendation(step, priority) {
+            const recommendations = {
+                "ERASE": {
+                    title: "Your Biggest Opportunity: ERASE (Core Wound Healing)",
+                    why: "Your current patterns - the beliefs driving your response to change - aren't personality flaws you need to manage better. They're rooted in specific moments when your nervous system learned that change was dangerous, that you weren't safe being yourself, or that your worth was conditional. Those original experiences created a blueprint that's been running your life ever since. Everything you've tried - understanding why, positive thinking, willpower - has been working around the wound, not healing it.",
+                    cant_alone: "You can understand intellectually where the pattern came from. You can use cognitive tools to reframe the beliefs. You can practice new behaviors with willpower. But the original imprint is stored in your subconscious and your body - levels you can't access through conscious effort alone. That's why the pattern keeps returning, even when you 'know better.' You need a method that addresses the root, not just the symptoms.",
+                    how_different: "ERASE uses timeline work, somatic processing, and subconscious reprogramming to find the specific moment when the pattern was created. Then we help your brain and body release the original charge - like disconnecting an old wire. This isn't about reliving trauma or years of processing. Most core wounds resolve in 3-6 ERASE sessions. When the original imprint is cleared, the pattern simply doesn't activate anymore.",
+                    what_changes: "The trigger itself disappears. It's not that you're 'managing' the pattern better - your system stops firing the old response. Clients describe it as 'I know intellectually this used to bother me, but I can't access the feeling anymore' or 'I keep waiting for the anxiety to show up, but it just... doesn't.' You're not using willpower to overcome the pattern; the pattern has been erased."
+                },
+                "SET": {
+                    title: "Your Biggest Opportunity: SET (Somatic Release)",
+                    why: "Your body is holding tension, activation, or shutdown patterns that conscious effort can't touch. You can think positive thoughts, practice mindfulness, or use breathing techniques - but if your nervous system is stuck in a stress state, those are temporary Band-Aids. The pattern is stored at the somatic level, where thinking can't reach it.",
+                    cant_alone: "Talk therapy happens in your thinking brain, but stress lives in your body. Cognitive techniques can't access the autonomic nervous system. Medication might numb the symptoms but doesn't resolve the underlying pattern. Even somatic therapies often work on regulation (managing the state) rather than resolution (changing the baseline). You need work that goes to the root.",
+                    how_different: "SET uses body-based techniques to help your nervous system release stored activation or shutdown. This isn't about 'relaxation exercises' - it's about completing incomplete survival responses that your body has been holding. When your system finally discharges what it's been carrying, your baseline state shifts. You're not managing stress better - you're carrying less of it.",
+                    what_changes: "Your baseline anxiety/tension/fatigue drops significantly. Things that used to trigger you don't anymore. You have more energy because you're not using it to maintain the stress state. Clients describe it as 'my body finally relaxed for the first time in years' or 'I didn't realize how much tension I was carrying until it was gone.'"
+                },
+                "EMPOWER": {
+                    title: "Your Biggest Opportunity: EMPOWER (Voice & Boundaries)",
+                    why: "You know what you need, but you can't seem to ask for it. Or you ask, but you don't believe you deserve it. Or you set a boundary, but you feel guilty and back down. This isn't a skills problem - it's a worthiness wound showing up in your communication. You need to address both the skill AND the block.",
+                    cant_alone: "Communication courses teach you what to say, but if your nervous system believes 'asking = dangerous' or 'boundaries = selfish,' you won't be able to use the scripts. Therapy might explore why you struggle, but exploration without skill-building leaves you aware but still stuck. You need both: clear the block AND build the skill.",
+                    how_different: "EMPOWER combines wound healing with skill building. First, we identify the original belief or experience that made expressing needs feel unsafe (RECOGNITION). Then we clear the somatic response that fires when you try to speak up (SOMATIC). Finally, we practice new communication patterns in real-time until they feel natural. You're not learning techniques to 'manage' the fear of speaking up - we remove the fear itself.",
+                    what_changes: "You can state your needs without apology. You set boundaries without guilt. You say no without over-explaining. People start treating you differently because you're showing up differently. Clients describe it as 'I finally have a voice' or 'I can't believe I used to struggle with this.'"
+                },
+                "RECOGNISE": {
+                    title: "Your Biggest Opportunity: RECOGNISE (Pattern Awareness)",
+                    why: "You can't transform what you can't see. Right now, your patterns are running automatically - you react without understanding why. RECOGNISE helps you develop the capacity to notice what's happening as it's happening, which is the essential foundation for all change.",
+                    cant_alone: "You can try to 'be more aware,' but without guidance, you'll likely focus on the wrong things or judge yourself for what you notice. Self-awareness requires learning to observe without collapsing into criticism or avoidance. That's a skill that needs to be taught.",
+                    how_different: "RECOGNISE teaches you to track your patterns in real-time - to notice the moment the old belief activates, to feel the body's response, to see the automatic behavior before you do it. This isn't just intellectual understanding; it's embodied awareness. You learn to catch yourself mid-pattern, which creates the space for choice.",
+                    what_changes: "You start noticing your patterns before they fully activate. Instead of realizing hours later 'I did it again,' you catch yourself in the moment and can choose differently. This awareness becomes automatic - you don't have to 'try' to notice, you just do. Clients describe it as 'I can see it coming now' or 'I have a split second to choose something else.'"
+                },
+                "TRANSFORM": {
+                    title: "Your Biggest Opportunity: TRANSFORM (Integration & Practice)",
+                    why: "You've done the healing work, cleared the wounds, built new skills - but without daily reinforcement, old patterns can creep back in. TRANSFORM is about making the new patterns automatic, so you don't have to think about them anymore. They just become who you are.",
+                    cant_alone: "You can commit to practicing new behaviors, but without a structure and accountability, life gets busy and old habits return. You need a system that keeps you on track and helps you navigate setbacks without shame.",
+                    how_different: "TRANSFORM creates personalized daily practices - simple, doable actions that reinforce the new neural pathways. We build these practices together based on your life, your schedule, and what actually works for you. Then we track what's working and adjust as needed. It's not about willpower; it's about building sustainable systems.",
+                    what_changes: "The new patterns become automatic. You don't have to 'remember' to do things differently - you just do. The change feels natural, not forced. Clients describe it as 'I don't even think about it anymore, it's just how I am now' or 'I can't believe this used to be hard.'"
+                }
+            };
+            
+            const rec = recommendations[step] || {
+                title: `Focus on ${step}`,
+                why: "This step addresses your current patterns.",
+                cant_alone: "Deep transformation requires guidance.",
+                how_different: "RESET works at the subconscious and somatic levels.",
+                what_changes: "Your patterns shift at the root level."
+            };
+            
+            return `
+                <div style="background: linear-gradient(135deg, #1E4976 0%, #2E6BA8 100%); padding: 30px; border-radius: 12px; color: white; margin: 20px 0;">
+                    <h4 style="color: white; font-size: 1.2rem; margin-bottom: 15px;">${rec.title}</h4>
+                </div>
+                
+                <div style="margin: 25px 0;">
+                    <p style="font-weight: 600; color: var(--text-primary); margin-bottom: 10px;">Why this is where you'll see the most dramatic shift:</p>
+                    <p style="line-height: 1.8;">${rec.why}</p>
+                </div>
+                
+                <div style="margin: 25px 0;">
+                    <p style="font-weight: 600; color: var(--text-primary); margin-bottom: 10px;">What you can't do alone (even with your current skills and tools):</p>
+                    <p style="line-height: 1.8;">${rec.cant_alone}</p>
+                </div>
+                
+                <div style="margin: 25px 0;">
+                    <p style="font-weight: 600; color: var(--text-primary); margin-bottom: 10px;">How this works differently than anything you've tried:</p>
+                    <p style="line-height: 1.8;">${rec.how_different}</p>
+                </div>
+                
+                <div style="margin: 25px 0;">
+                    <p style="font-weight: 600; color: var(--text-primary); margin-bottom: 10px;">What changes when this is resolved:</p>
+                    <p style="line-height: 1.8;">${rec.what_changes}</p>
+                </div>
+                
+                <div style="background: #F0F7FF; padding: 20px; border-radius: 12px; border-left: 4px solid var(--primary); margin-top: 25px;">
+                    <p style="font-weight: 600; color: var(--primary); margin-bottom: 10px;">The Complete RESET Journey</p>
+                    <p style="line-height: 1.7;">While ${step} is your biggest leverage point right now, RESET is a complete system. All five steps work together: RECOGNISE (awareness), ERASE (core wounds), SET (somatic patterns), EMPOWER (voice & boundaries), and TRANSFORM (daily integration). We start with ${step} because this is where you'll see the most dramatic shift - but the full journey ensures lasting transformation.</p>
+                </div>
+            `;
+        }
+
+
+        function displayResults(profile) {
+            const container = document.getElementById('questionsContainer');
+            const nav = document.querySelector('.navigation');
+            nav.style.display = 'none';
+            document.getElementById('progressText').style.display = 'none';
+            document.querySelector('.progress-container').style.display = 'none';
+
+            container.innerHTML = `
+                <div class="completion-screen">
+                    <div class="completion-icon">✓</div>
+                    <h2>Your RESET Profile is Ready!</h2>
+                    <p>Thank you for completing the assessment, ${userData.userName}.</p>
+
+                    <div class="profile-card" style="background: linear-gradient(135deg, #1E4976 0%, #2E6BA8 100%); color: white !important; padding: 35px;">
+                        <h3 style="color: white !important; margin-bottom: 20px;">Understanding the RESET Method</h3>
+                        <p style="margin-bottom: 20px; color: white !important;">RESET is a complete system for lasting change:</p>
+                        <p style="margin: 10px 0; color: white !important;"><strong>R - RECOGNITION:</strong> Understanding what patterns you're running and what triggers them</p>
+                        <p style="margin: 10px 0; color: white !important;"><strong>E - ERASURE:</strong> Helping your brain let go of old circuits that cause pain - like disconnecting a wire before it sparks</p>
+                        <p style="margin: 10px 0; color: white !important;"><strong>S - SOMATIC RELEASE:</strong> Releasing the memories your body is holding (not just your mind) - because as "The Body Keeps The Score" shows, pain lives in our cells</p>
+                        <p style="margin: 10px 0; color: white !important;"><strong>E - EMPOWERMENT:</strong> Learning new tools to handle emotions when old habits try to return</p>
+                        <p style="margin: 10px 0; color: white !important;"><strong>T - TRANSFORMATION:</strong> Creating new daily practices that reinforce the new pattern</p>
+                    </div>
+
+                    <div class="profile-card">
+                        <h3>Your Main Life Transition</h3>
+                        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 10px;">The primary change you're navigating right now</p>
+                        <p><strong>${profile.primaryThreshold}</strong></p>
+                        <p style="margin-top: 15px; line-height: 1.8;">${getTransitionInsights(profile.primaryThreshold).challenges}</p>
+                        <p style="margin-top: 15px; line-height: 1.8; padding: 15px; background: #F0F7FF; border-left: 4px solid var(--primary); border-radius: 8px;"><strong>The invitation:</strong> ${getTransitionInsights(profile.primaryThreshold).invitation}</p>
+                    </div>
+
+                    <div class="profile-card">
+                        <h3>Your Core Pattern</h3>
+                        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 15px;">The limiting belief driving your response to change</p>
+                        
+                        <div style="margin: 20px 0;">
+                            <p style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 5px;">${profile.dominantPattern}</p>
+                        </div>
+                        
+                        <div style="background: #FFF8F0; padding: 20px; border-radius: 12px; border-left: 4px solid var(--secondary); margin: 20px 0;">
+                            <p style="font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary); margin-bottom: 8px;">The Limiting Belief at the Root:</p>
+                            <p style="font-style: italic; color: var(--primary); font-size: 1.05rem; line-height: 1.6;">"${getPatternInsights(profile.dominantPattern).belief}"</p>
+                        </div>
+                        
+                        <div style="margin-top: 20px;">
+                            <p style="font-weight: 600; color: var(--text-primary); margin-bottom: 10px;">Why This Period Is Your Opportunity:</p>
+                            <p style="line-height: 1.8; white-space: pre-line;">${getPatternInsights(profile.dominantPattern).opportunity}</p>
+                        </div>
+                    </div>
+
+                    <div class="profile-card">
+                        <h3>Your Change Response Style</h3>
+                        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 10px;">Your first instinct when facing something new</p>
+                        <p><strong>${getCopingDescription(profile.copingStyle).name || profile.copingStyle}</strong></p>
+                        <p style="margin-top: 15px; line-height: 1.8; white-space: pre-line;">${getCopingDescription(profile.copingStyle).description || getCopingDescription(profile.copingStyle)}</p>
+                    </div>
+
+                    <div class="profile-card">
+                        <h3>Your Body's Stress Response</h3>
+                        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 10px;">How you respond to pressure</p>
+                        <p><strong>${getSomaticDescription(profile.somaticPattern).name || profile.somaticPattern}</strong></p>
+                        <p style="margin-top: 15px; line-height: 1.8; white-space: pre-line;">${getSomaticDescription(profile.somaticPattern).description || "Your body has developed its own way of responding to stress."}</p>
+                    </div>
+
+                    <div class="profile-card">
+                        <h3>Where You Are in Your Journey</h3>
+                        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 10px;">Your current foundation for transformation</p>
+                        <p><strong>${profile.readinessLevel}</strong></p>
+                        <p style="white-space: pre-line;">${getReadinessDescription(profile.readinessLevel)}</p>
+                    </div>
+
+                    <div class="profile-card">
+                        <h3>Recommended RESET Focus</h3>
+                        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 20px;">Where to start for maximum transformation</p>
+                        
+                        ${profile.recommendations.map(rec => getResetRecommendation(rec.step, rec.priority)).join('')}
+                    </div>
+
+                    <button class="btn btn-primary" onclick="downloadProfile()" style="margin: 20px auto; display: block;">
+                        Download Your Profile (PDF)
+                        <span>↓</span>
+                    </button>
+
+                    <div class="cta-box">
+                        <h3>Ready to Begin Your RESET Journey?</h3>
+                        <p>Book a 60-minute RESET Diagnosis Session to dive deeper into your patterns and create your personalized transformation plan.</p>
+                        <a href="https://live.vcita.com/site/happyeverafter/online-scheduling?service=0t3q2orey007vb7i" class="btn-white" target="_blank">
+                            Book Your Session
+                        </a>
+                        <p style="margin-top: 15px; font-size: 0.9rem; opacity: 0.9;">
+                            Or simply reply to the email with your results to connect with me directly.
+                        </p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getPatternDescription(pattern) {
+            const descriptions = {
+                "Trying to Prove Your Worth": "You find yourself working extra hard, giving more than you have, trying to show you deserve this new chapter. It's like you're constantly proving yourself worthy of the life you're stepping into.",
+                "Holding Onto the Old": "Even when old patterns don't fit anymore, they feel safer than the unknown. You find yourself doing things the old way, even when you know a new approach might work better.",
+                "Feeling Lost in Transition": "The old version of you doesn't fit anymore, but the new version hasn't fully taken shape yet. This in-between space is uncomfortable - like standing between two rooms, not quite in either one. This confusion is completely natural during big life changes.",
+                "Resisting the Change": "Part of you is pushing back against this transition, trying to make the old version of you work in this new situation. It's like trying to wear clothes that don't fit anymore.",
+                "Feeling Disconnected": "You've pulled away from your feelings and desires - almost like you're watching your life from the outside. This disconnection is your system's way of protecting you from overwhelm.",
+                "Embracing New Possibilities": "You're approaching this transition with excitement and openness. You see the potential for growth, new experiences, and positive change. While there may be uncertainty, you're focusing on the opportunities rather than the fears. This optimism is a real strength - it means you're ready to step into what's next with curiosity and energy."
+            };
+            return descriptions[pattern] || "You're navigating a significant life transition.";
+        }
+
+        function getCopingDescription(style) {
+            const descriptions = {
+                "Need to Get It Right": {
+                    name: "Perfectionist Planner",
+                    description: "You respond to change by trying to figure everything out before you take a step. You research, analyze, plan, and prepare - believing if you can just get it 'right,' you'll be safe. But the bar for 'right' keeps moving, leaving you stuck in analysis paralysis. This isn't about being detail-oriented; it's a control strategy born from the belief that mistakes equal danger.\n\nWhy this period matters: This transition won't wait for perfect clarity. The more you demand certainty before acting, the more anxious and stuck you become. This is your opportunity to learn that imperfect action is more valuable than perfect planning - and that you can tolerate making mistakes without it meaning something catastrophic about you."
+                },
+                "Hard on Yourself": {
+                    name: "Inner Critic",
+                    description: "You respond to change by turning inward with harsh self-judgment. When things get difficult, your first thought is 'What's wrong with me?' You hold yourself to impossible standards and use self-criticism as motivation - but it's keeping you frozen in shame. This isn't high standards; it's self-attack.\n\nWhy this period matters: You can't grow from a place of self-criticism - you can only defend yourself from it. This transition is showing you that the harsh inner voice isn't helping you improve; it's keeping you stuck. This is your opportunity to build self-compassion as a skill and learn that kindness is more transformative than criticism."
+                },
+                "Push Through Without Processing": {
+                    name: "Emotional Avoider",
+                    description: "You respond to change by staying busy and pushing forward. When feelings or difficulty show up, you bypass them in favor of action. You'd rather do than feel. But unprocessed emotions don't disappear - they accumulate in your body until it forces you to stop through illness, burnout, or breakdown.\n\nWhy this period matters: The backlog of unprocessed experience is building, and this transition is demanding that you actually feel what's happening. This is your opportunity to learn that slowing down to process isn't weakness or waste - it's how you prevent bigger collapses later. You can feel AND do; they're not opposites."
+                },
+                "See It as Growth": {
+                    name: "Growth Seeker",
+                    description: "You naturally respond to change by looking for what you can learn and how you can evolve. This is a real strength - your growth orientation helps you move through difficulty with less resistance than most people. But watch for the shadow: sometimes 'what can I learn from this' becomes another way to avoid actually feeling the pain, anger, or grief.\n\nWhy this period matters: Your growth mindset is valuable AND it's important to check whether you're using it to bypass difficult emotions. This is your opportunity to ensure your evolution is grounded in reality, not just positive reframing. You can grow AND grieve. Both can be true."
+                },
+                "Taking Your Time": {
+                    name: "Cautious Assessor",
+                    description: "You respond to change by moving slowly and carefully. You need time to assess, prepare, and make sure each step feels safe before taking the next. You're deliberate and thorough - but sometimes the caution is driven by fear rather than wisdom, and you get stuck in permanent assessment mode.\n\nWhy this period matters: This transition is asking: is your pace wise self-care, or fear-based avoidance? This is your opportunity to learn the difference between 'not yet' (wisdom) and 'not ever' (fear). You can move at your own pace AND still move forward. Slow doesn't have to mean stuck."
+                }
+            };
+            return descriptions[style] || { name: style, description: "You're developing your response to change." };
+        }
+
+        function getSomaticDescription(pattern) {
+            const descriptions = {
+                "Tense & Activated": {
+                    name: "You Already Have Strong Mental Tools",
+                    description: "You've developed effective mental strategies for managing stress - you can think your way through problems, plan ahead, and use willpower to push through difficult moments. This has served you well. However, what mental tools can't address is the physical tension your body is carrying. Even when you're handling things well cognitively, your body may be holding patterns of activation (tight chest, shallow breathing, tense muscles) that cognitive strategies alone can't release.\n\nThe opportunity: RESET works at the somatic level - addressing the stored tension in your body that thinking can't touch. Most clients with strong mental tools see dramatic physical relief when they add body-based work. It's not about replacing what's working; it's about completing it with something your current approach can't reach."
+                },
+                "Restless & Alert": {
+                    name: "You're Managing Well, But Your Body Is Working Overtime",
+                    description: "You've built coping strategies that help you stay functional despite the restlessness and agitation. You know how to keep moving, stay busy, and channel the energy productively. That's a real skill. However, the underlying pattern - your body's need to move or escape when stress shows up - is still running in the background, using energy even when you're managing it well.\n\nThe opportunity: RESET addresses why your body mobilizes for flight in the first place, rather than just managing the symptoms. When the root cause is resolved, the restlessness drops significantly - not because you're 'controlling' it better, but because it's simply not being triggered anymore. Most clients describe it as finally being able to 'just sit' without the constant urge to move."
+                },
+                "Quiet & Withdrawn": {
+                    name: "You've Learned to Protect Yourself, But At a Cost",
+                    description: "You've developed strategies to manage overwhelm by pulling back, going quiet, or needing extensive alone time to recharge. This has helped you survive situations that felt like too much. However, the shutdown response is still activating more than it needs to - meaning you're using significant energy to stay offline, and it's limiting your capacity to engage fully with life.\n\nThe opportunity: RESET helps rebuild your system's capacity to feel and engage without flooding or shutting down. It's not about pushing yourself to feel more before you're ready; it's about gradually expanding what your nervous system can handle. Most clients describe it as 'coming back to life' or 'feeling things again without being overwhelmed' - and it happens at your pace, not through force."
+                },
+                "Grounded & Present": {
+                    name: "You're Already Ahead - Let's Optimize",
+                    description: "You've developed strong regulation skills - you can stay present with difficulty, feel your feelings without getting overwhelmed, and return to baseline relatively quickly after stress. This is a genuine strength that many people don't have. You're not starting from dysfunction.\n\nThe opportunity: Even with good regulation, transitions can activate old patterns you didn't know were there. RESET helps identify and clear the subtle blocks that might not be obvious - the specific triggers that still dysregulate you even though you generally handle stress well. Think of it as fine-tuning an already functional system. Most clients with good baseline regulation are surprised by how much better they can feel when specific old wounds are cleared."
+                }
+            };
+            
+            for (let key in descriptions) {
+                if (pattern && pattern.includes(key)) {
+                    return descriptions[key];
+                }
+            }
+            
+            return {
+                name: "Your Unique Pattern",
+                description: "Your body has its own way of responding to stress and change."
+            };
+        }
+
+        function getReadinessDescription(level) {
+            const descriptions = {
+                "Ready for Deep Work": "Where you are: You have strong awareness of what's happening in your body and you can clearly communicate your needs. You're already doing the foundational work that many people struggle with.\n\nIf we work together: We can move quickly into transformation. You're ready to work with the deeper patterns and create lasting change.\n\nYour strength: You trust your inner knowing and aren't afraid to ask for what you need.",
+                "Building Your Foundation": "Where you are: You're developing awareness of your body's signals and getting clearer about what you need. This is the most important stage - you can't transform what you can't see.\n\nIf we work together: We'll start by building your capacity to notice patterns as they happen, tune into your body's messages, and articulate what you need. These foundation skills make everything else possible.\n\nYour strength: You're willing to look at what's really going on, which takes courage and honesty.",
+                "Starting to Notice": "Where you are: You're at the beginning of paying attention to your body's wisdom and identifying what you need. Most people spend years not even getting to this point - you're ahead of the game.\n\nIf we work together: We'll build your awareness gradually and gently. You'll learn to recognize your body's signals, identify your needs, and develop the language to express them. This foundation work is essential.\n\nYour strength: You're open to learning and willing to start where you are, which is exactly what growth requires."
+            };
+            return descriptions[level] || "You're on a journey of growth.";
+        }
+
+
+        function getResetRecommendationPDF(step, priority) {
+            const recommendations = {
+                "ERASE": {
+                    title: "Your Biggest Opportunity: ERASE (Core Wound Healing)",
+                    why: "Your current patterns - the beliefs driving your response to change - aren't personality flaws you need to manage better. They're rooted in specific moments when your nervous system learned that change was dangerous, that you weren't safe being yourself, or that your worth was conditional. Those original experiences created a blueprint that's been running your life ever since. Everything you've tried - understanding why, positive thinking, willpower - has been working around the wound, not healing it.",
+                    cant_alone: "You can understand intellectually where the pattern came from. You can use cognitive tools to reframe the beliefs. You can practice new behaviors with willpower. But the original imprint is stored in your subconscious and your body - levels you can't access through conscious effort alone. That's why the pattern keeps returning, even when you 'know better.' You need a method that addresses the root, not just the symptoms.",
+                    how_different: "ERASE uses timeline work, somatic processing, and subconscious reprogramming to find the specific moment when the pattern was created. Then we help your brain and body release the original charge - like disconnecting an old wire. This isn't about reliving trauma or years of processing. Most core wounds resolve in 3-6 ERASE sessions. When the original imprint is cleared, the pattern simply doesn't activate anymore.",
+                    what_changes: "The trigger itself disappears. It's not that you're 'managing' the pattern better - your system stops firing the old response. Clients describe it as 'I know intellectually this used to bother me, but I can't access the feeling anymore' or 'I keep waiting for the anxiety to show up, but it just... doesn't.' You're not using willpower to overcome the pattern; the pattern has been erased."
+                },
+                "SET": {
+                    title: "Your Biggest Opportunity: SET (Somatic Release)",
+                    why: "Your body is holding tension, activation, or shutdown patterns that conscious effort can't touch. You can think positive thoughts, practice mindfulness, or use breathing techniques - but if your nervous system is stuck in a stress state, those are temporary Band-Aids. The pattern is stored at the somatic level, where thinking can't reach it.",
+                    cant_alone: "Talk therapy happens in your thinking brain, but stress lives in your body. Cognitive techniques can't access the autonomic nervous system. Medication might numb the symptoms but doesn't resolve the underlying pattern. Even somatic therapies often work on regulation (managing the state) rather than resolution (changing the baseline). You need work that goes to the root.",
+                    how_different: "SET uses body-based techniques to help your nervous system release stored activation or shutdown. This isn't about 'relaxation exercises' - it's about completing incomplete survival responses that your body has been holding. When your system finally discharges what it's been carrying, your baseline state shifts. You're not managing stress better - you're carrying less of it.",
+                    what_changes: "Your baseline anxiety/tension/fatigue drops significantly. Things that used to trigger you don't anymore. You have more energy because you're not using it to maintain the stress state. Clients describe it as 'my body finally relaxed for the first time in years' or 'I didn't realize how much tension I was carrying until it was gone.'"
+                },
+                "EMPOWER": {
+                    title: "Your Biggest Opportunity: EMPOWER (Voice & Boundaries)",
+                    why: "You know what you need, but you can't seem to ask for it. Or you ask, but you don't believe you deserve it. Or you set a boundary, but you feel guilty and back down. This isn't a skills problem - it's a worthiness wound showing up in your communication. You need to address both the skill AND the block.",
+                    cant_alone: "Communication courses teach you what to say, but if your nervous system believes 'asking = dangerous' or 'boundaries = selfish,' you won't be able to use the scripts. Therapy might explore why you struggle, but exploration without skill-building leaves you aware but still stuck. You need both: clear the block AND build the skill.",
+                    how_different: "EMPOWER combines wound healing with skill building. First, we identify the original belief or experience that made expressing needs feel unsafe. Then we clear the somatic response that fires when you try to speak up. Finally, we practice new communication patterns in real-time until they feel natural. You're not learning techniques to 'manage' the fear of speaking up - we remove the fear itself.",
+                    what_changes: "You can state your needs without apology. You set boundaries without guilt. You say no without over-explaining. People start treating you differently because you're showing up differently. Clients describe it as 'I finally have a voice' or 'I can't believe I used to struggle with this.'"
+                },
+                "RECOGNISE": {
+                    title: "Your Biggest Opportunity: RECOGNISE (Pattern Awareness)",
+                    why: "You can't transform what you can't see. Right now, your patterns are running automatically - you react without understanding why. RECOGNISE helps you develop the capacity to notice what's happening as it's happening, which is the essential foundation for all change.",
+                    cant_alone: "You can try to 'be more aware,' but without guidance, you'll likely focus on the wrong things or judge yourself for what you notice. Self-awareness requires learning to observe without collapsing into criticism or avoidance. That's a skill that needs to be taught.",
+                    how_different: "RECOGNISE teaches you to track your patterns in real-time - to notice the moment the old belief activates, to feel the body's response, to see the automatic behavior before you do it. This isn't just intellectual understanding; it's embodied awareness. You learn to catch yourself mid-pattern, which creates the space for choice.",
+                    what_changes: "You start noticing your patterns before they fully activate. Instead of realizing hours later 'I did it again,' you catch yourself in the moment and can choose differently. This awareness becomes automatic - you don't have to 'try' to notice, you just do. Clients describe it as 'I can see it coming now' or 'I have a split second to choose something else.'"
+                },
+                "TRANSFORM": {
+                    title: "Your Biggest Opportunity: TRANSFORM (Integration & Practice)",
+                    why: "You've done the healing work, cleared the wounds, built new skills - but without daily reinforcement, old patterns can creep back in. TRANSFORM is about making the new patterns automatic, so you don't have to think about them anymore. They just become who you are.",
+                    cant_alone: "You can commit to practicing new behaviors, but without a structure and accountability, life gets busy and old habits return. You need a system that keeps you on track and helps you navigate setbacks without shame.",
+                    how_different: "TRANSFORM creates personalized daily practices - simple, doable actions that reinforce the new neural pathways. We build these practices together based on your life, your schedule, and what actually works for you. Then we track what's working and adjust as needed. It's not about willpower; it's about building sustainable systems.",
+                    what_changes: "The new patterns become automatic. You don't have to 'remember' to do things differently - you just do. The change feels natural, not forced. Clients describe it as 'I don't even think about it anymore, it's just how I am now' or 'I can't believe this used to be hard.'"
+                }
+            };
+            
+            return recommendations[step] || {
+                title: `Focus on ${step}`,
+                why: "This step addresses your current patterns.",
+                cant_alone: "Deep transformation requires guidance.",
+                how_different: "RESET works at the subconscious and somatic levels.",
+                what_changes: "Your patterns shift at the root level."
+            };
+        }
+
+        function downloadProfile() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            let yPos = 20;
+            const lineHeight = 7;
+            const pageHeight = 280;
+            const leftMargin = 20;
+            const rightMargin = 190;
+            
+            function checkPageBreak(needed = 10) {
+                if (yPos + needed > pageHeight) {
+                    doc.addPage();
+                    yPos = 20;
+                    return true;
+                }
+                return false;
+            }
+            
+            function addText(text, fontSize, style = 'normal', color = [0, 0, 0]) {
+                doc.setFontSize(fontSize);
+                doc.setFont('helvetica', style);
+                doc.setTextColor(...color);
+                
+                const lines = doc.splitTextToSize(text, rightMargin - leftMargin);
+                lines.forEach(line => {
+                    checkPageBreak();
+                    doc.text(line, leftMargin, yPos);
+                    yPos += lineHeight;
+                });
+            }
+            
+            // Title Page
+            doc.setFillColor(30, 73, 118);
+            doc.rect(0, 0, 210, 50, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(24);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Your Hidden Pattern Blueprint', 105, 25, { align: 'center' });
+            doc.setFontSize(12);
+            doc.text('Personalized Assessment Results', 105, 35, { align: 'center' });
+            
+            yPos = 60;
+            
+            // Add RESET Framework explanation
+            checkPageBreak(80);
+            doc.setFillColor(30, 73, 118);
+            doc.roundedRect(leftMargin, yPos, rightMargin - leftMargin, 70, 3, 3, 'F');
+            doc.setFontSize(14);
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(255, 255, 255);
+            doc.text('Understanding the RESET Method', leftMargin + 5, yPos + 10);
+            doc.setFontSize(9);
+            doc.setFont('helvetica', 'normal');
+            let resetY = yPos + 18;
+            doc.text('R - RECOGNITION: Understanding what patterns you are running and what triggers them', leftMargin + 5, resetY);
+            resetY += 8;
+            doc.text('E - ERASURE: Helping your brain let go of old circuits that cause pain', leftMargin + 5, resetY);
+            resetY += 8;
+            doc.text('S - SOMATIC RELEASE: Releasing the memories your body is holding', leftMargin + 5, resetY);
+            resetY += 8;
+            doc.text('E - EMPOWERMENT: Learning new tools to handle emotions when old habits return', leftMargin + 5, resetY);
+            resetY += 8;
+            doc.text('T - TRANSFORMATION: Creating new daily practices that reinforce the new pattern', leftMargin + 5, resetY);
+            yPos = resetY + 20;
+            
+            // Client Info
+            doc.setTextColor(0, 0, 0);
+            addText(`Name: ${userData.userName}`, 12, 'bold');
+            addText(`Email: ${userData.userEmail}`, 10, 'normal');
+            addText(`Assessment Date: ${new Date().toLocaleDateString()}`, 10, 'normal');
+            yPos += 10;
+            
+            // Profile Summary Box
+            checkPageBreak(30);
+            doc.setFillColor(250, 248, 245);
+            doc.roundedRect(leftMargin, yPos, rightMargin - leftMargin, 25, 3, 3, 'F');
+            doc.setFontSize(14);
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(30, 73, 118);
+            doc.text('Your Profile Summary', leftMargin + 5, yPos + 8);
+            yPos += 20;
+            
+            const profile = generateProfile();
+            
+            // Primary Threshold
+            checkPageBreak(15);
+            addText('Your Main Life Transition:', 12, 'bold', [30, 73, 118]);
+            addText(profile.primaryThreshold, 11, 'bold');
+            yPos += 3;
+            const transitionInsights = getTransitionInsights(profile.primaryThreshold);
+            addText('Typical Challenges:', 10, 'bold', [0, 0, 0]);
+            addText(transitionInsights.challenges, 9, 'normal', [107, 114, 128]);
+            yPos += 3;
+            addText('The Invitation:', 10, 'bold', [30, 73, 118]);
+            addText(transitionInsights.invitation, 9, 'normal', [107, 114, 128]);
+            yPos += 5;
+            
+            // Dominant Pattern
+            checkPageBreak(30);
+            addText('Your Core Pattern:', 12, 'bold', [30, 73, 118]);
+            addText(profile.dominantPattern, 11, 'bold');
+            const patternInsights = getPatternInsights(profile.dominantPattern);
+            addText('Limiting Belief: "' + patternInsights.belief + '"', 10, 'italic', [30, 73, 118]);
+            yPos += 3;
+            addText('Why This Is Your Opportunity:', 10, 'bold', [0, 0, 0]);
+            addText(patternInsights.opportunity, 9, 'normal', [107, 114, 128]);
+            yPos += 5;
+            
+            // Coping Style
+            checkPageBreak(25);
+            addText('Your Change Response Style:', 12, 'bold', [30, 73, 118]);
+            const copingInfo = getCopingDescription(profile.copingStyle);
+            addText(copingInfo.name || profile.copingStyle, 11, 'bold');
+            addText(copingInfo.description || '', 9, 'normal', [107, 114, 128]);
+            yPos += 5;
+            
+            // Emotional Signature
+            checkPageBreak(15);
+            addText('Your Emotional Signature:', 12, 'bold', [30, 73, 118]);
+            addText(profile.emotionalSignature, 11, 'normal');
+            yPos += 5;
+            
+            // Somatic Pattern
+            checkPageBreak(25);
+            addText('Your Body\'s Stress Response:', 12, 'bold', [30, 73, 118]);
+            const somaticInfo = getSomaticDescription(profile.somaticPattern);
+            addText(somaticInfo.name || profile.somaticPattern, 11, 'bold');
+            addText(somaticInfo.description || '', 9, 'normal', [107, 114, 128]);
+            yPos += 5;
+            
+            // Readiness Level
+            checkPageBreak(20);
+            addText('Where You Are in Your Journey:', 12, 'bold', [30, 73, 118]);
+            addText(profile.readinessLevel, 11, 'bold');
+            addText(getReadinessDescription(profile.readinessLevel), 10, 'normal', [107, 114, 128]);
+            yPos += 10;
+            
+            // Recommendations - Enhanced
+            checkPageBreak(15);
+            addText('Recommended RESET Focus:', 14, 'bold', [30, 73, 118]);
+            yPos += 5;
+            
+            profile.recommendations.forEach(rec => {
+                const recDetail = getResetRecommendationPDF(rec.step, rec.priority);
+                
+                // Title
+                checkPageBreak(10);
+                addText(recDetail.title, 11, 'bold', [30, 73, 118]);
+                yPos += 2;
+                
+                // Why this is your biggest opportunity
+                checkPageBreak(15);
+                addText('Why this is where you\'ll see the most dramatic shift:', 9, 'bold', [0, 0, 0]);
+                addText(recDetail.why, 8, 'normal', [107, 114, 128]);
+                yPos += 2;
+                
+                // What you can't do alone
+                checkPageBreak(15);
+                addText('What you can\'t do alone:', 9, 'bold', [0, 0, 0]);
+                addText(recDetail.cant_alone, 8, 'normal', [107, 114, 128]);
+                yPos += 2;
+                
+                // How it works differently
+                checkPageBreak(15);
+                addText('How this works differently:', 9, 'bold', [0, 0, 0]);
+                addText(recDetail.how_different, 8, 'normal', [107, 114, 128]);
+                yPos += 2;
+                
+                // What changes
+                checkPageBreak(15);
+                addText('What changes when resolved:', 9, 'bold', [0, 0, 0]);
+                addText(recDetail.what_changes, 8, 'normal', [107, 114, 128]);
+                yPos += 8;
+            });
+            
+            // The Complete Journey note
+            checkPageBreak(15);
+            addText('The Complete RESET Journey:', 10, 'bold', [30, 73, 118]);
+            addText('RESET is a complete system where all five steps work together: RECOGNISE (awareness), ERASE (core wounds), SET (somatic patterns), EMPOWER (voice & boundaries), and TRANSFORM (daily integration). We start where you\'ll see the most dramatic shift - but the full journey ensures lasting transformation.', 9, 'normal', [107, 114, 128]);
+            yPos += 5;
+            
+            // Key Insights from Open-Ended Questions
+            yPos += 10;
+            checkPageBreak(15);
+            addText('Your Key Insights:', 14, 'bold', [30, 73, 118]);
+            yPos += 3;
+            
+            if (responses[6]) {
+                checkPageBreak(20);
+                addText('What you shared about your struggle:', 11, 'bold');
+                addText(`"${responses[6]}"`, 10, 'italic', [107, 114, 128]);
+                yPos += 5;
+            }
+            
+            if (responses[12]) {
+                checkPageBreak(20);
+                addText('Your desired reset:', 11, 'bold');
+                addText(`"${responses[12]}"`, 10, 'italic', [107, 114, 128]);
+                yPos += 5;
+            }
+            
+            if (responses[13]) {
+                checkPageBreak(20);
+                addText('Your vision of aligned growth:', 11, 'bold');
+                addText(`"${responses[13]}"`, 10, 'italic', [107, 114, 128]);
+                yPos += 5;
+            }
+            
+            // Next Steps
+            checkPageBreak(40);
+            yPos += 10;
+            doc.setFillColor(30, 73, 118);
+            doc.roundedRect(leftMargin, yPos, rightMargin - leftMargin, 45, 3, 3, 'F');
+            doc.setFontSize(14);
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(255, 255, 255);
+            doc.text('Your Next Step', leftMargin + 5, yPos + 10);
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'normal');
+            const nextStepText = 'Book a 60-minute RESET Diagnosis Session to dive deeper into your patterns and create your personalized transformation plan.';
+            const nextStepLines = doc.splitTextToSize(nextStepText, rightMargin - leftMargin - 10);
+            let nextStepY = yPos + 20;
+            nextStepLines.forEach(line => {
+                doc.text(line, leftMargin + 5, nextStepY);
+                nextStepY += 6;
+            });
+            doc.setFontSize(9);
+            doc.text('Visit: happyeverafter.vcita.com to book your session', leftMargin + 5, nextStepY + 5);
+            
+            // Footer
+            doc.setFontSize(8);
+            doc.setTextColor(107, 114, 128);
+            doc.text('Valentina Tudose | Relational RESET Coaching', 105, 290, { align: 'center' });
+            
+            // Save
+            doc.save(`RESET_Profile_${userData.userName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`);
+        }
+
+        // Store profile for PDF generation
+        window.addEventListener('beforeunload', function() {
+            const profile = generateProfile();
+            localStorage.setItem('resetProfile', JSON.stringify(profile));
+        });
+    </script>
+</body>
+</html>
